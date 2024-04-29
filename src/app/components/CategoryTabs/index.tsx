@@ -3,45 +3,35 @@
 import React, { useState } from 'react'
 
 import Chip from '@mui/material/Chip';
-import Stack from '@mui/material/Stack';
+import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
 
 const categories: string[] = [
-  'Politics', 'Business', 'Tech', 'Art', 'Science', 'Health', 'Sports'
+  'General', 'Entertainment', 'Politics', 'Business', 'Tech', 'Art', 'Science', 'Health', 'Sports'
 ]
 
 export const CategoryTabs = () => {
-  const [chipsSelected, setChipsSelected] = useState<string[]>([])
+  const [chipsSelected, setChipsSelected] = useState<string>(categories[0])
 
   const handleClick = (categoryLabel: string) => {
-    const hasCategorySelected = chipsSelected.includes(categoryLabel)
-    if (hasCategorySelected) {
-      const index = chipsSelected.indexOf(categoryLabel);
-      chipsSelected.splice(index, 1)
-      setChipsSelected([...chipsSelected,])
-    } else {
-      setChipsSelected([...chipsSelected, categoryLabel])
-    }
+    setChipsSelected(categoryLabel)
   };
 
-  const handleClearChips = () => {
-    setChipsSelected([])
-  }
-
   return (
-    <Stack direction="row" spacing={1}>
-      {
-        categories.map((categoryLabel) => {
-          return (
-            <Chip key={categoryLabel} label={categoryLabel}
-              variant={chipsSelected.includes(categoryLabel) ? 'filled' : 'outlined'}
-              onClick={() => handleClick(categoryLabel)} />
-          )
-        })
-      }
-
-      {chipsSelected.length > 0 && (
-        <Chip label="Clear" color='warning' variant="outlined" onClick={handleClearChips} onDelete={handleClearChips} />
-      )}
-    </Stack>
+    <Box sx={{ flexGrow: 1 }}>
+      <Grid container spacing={1}>
+        {
+          categories.map((categoryLabel) => {
+            return (
+              <Grid item key={categoryLabel} xs='auto'>
+                <Chip label={categoryLabel}
+                  variant={chipsSelected === categoryLabel ? 'filled' : 'outlined'}
+                  onClick={() => handleClick(categoryLabel)} />
+              </Grid>
+            )
+          })
+        }
+      </Grid>
+    </Box>
   )
 }
