@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
 import { ThemeProvider } from '@mui/material/styles';
+import Container from '@mui/material/Container';
+
 import theme from './theme';
 import "./globals.css";
 import { Header } from "./components/Header";
@@ -30,11 +32,13 @@ export default function RootLayout({
           <ThemeProvider theme={theme}>
 
             <main >
-              <Header />
-              {/* Navbar */}
-              <section>
-                {children}
-              </section>
+              <Container maxWidth="xl">
+                <Header />
+                {/* Navbar */}
+                <section>
+                  {children}
+                </section>
+              </Container>
             </main>
           </ThemeProvider>
         </AppRouterCacheProvider>
