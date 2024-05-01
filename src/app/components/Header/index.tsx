@@ -14,7 +14,7 @@ import NewspaperIcon from '@mui/icons-material/Newspaper';
 
 import { SearchBar } from './components/SearchBar';
 
-const pages = ['Latest news', 'categories', 'Blog'];
+const pages = ['Latest news', 'Blog'];
 
 export const Header = () => {
 

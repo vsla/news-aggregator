@@ -2,6 +2,7 @@ import Typography from '@mui/material/Typography';
 
 import styles from './page.module.css'
 import { CategoryTabs } from './components/CategoryTabs';
+import { ArticlesList } from './components/ArtciclesList';
 
 export default function Home() {
   return (
@@ -11,6 +12,8 @@ export default function Home() {
       </Typography>
 
       <CategoryTabs />
+
+      <ArticlesList />
     </div>
   );
 }
