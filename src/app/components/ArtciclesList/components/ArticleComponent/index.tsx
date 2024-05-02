@@ -34,7 +34,7 @@ const ArticleContainer = styled.div`
   
   img{
     &:hover{
-      filter: blur(0.05rem);
+     transform: scale(1.01);
     }
   }
 
@@ -45,9 +45,9 @@ const ArticleContainer = styled.div`
 `
 
 const ImageComponent = styled(Image)`
-  object-fit: contain;
+  object-fit: cover;
   width: 100%;
-  height: auto;
+  height: 190px;
   border-radius: 8px;
 `
 
