@@ -1,21 +1,14 @@
 import React from 'react'
-import { ArticlesMockList } from '@/app/mocks/ArticleListMock'
 import { Grid } from '@mui/material'
 import Box from '@mui/material/Box';
 
 import styles from './page.module.css'
 import { Article } from '@/app/types'
 import { ArticleComponent } from './components/ArticleComponent'
+import { fetchArticles } from '@/app/contexts/Articles/actions/fetchArticles';
 
-export const ArticlesList = () => {
-
-  function splitToNChunks<T>(array: T[], n: number) {
-    let result = [];
-    for (let i = n; i > 0; i--) {
-      result.push(array.splice(0, Math.ceil(array.length / i)));
-    }
-    return result;
-  }
+export const ArticlesList = async () => {
+  const articleList = await fetchArticles()
 
   const renderArticle = (article: Article, positions: { xs: number, sm: number, md: number }) => {
     const { xs, sm, md } = positions
@@ -28,38 +21,19 @@ export const ArticlesList = () => {
 
   const renderArticles = (array: Article[], positions: { xs: number, sm: number, md: number } = {
     xs: 12,
-    sm: 12,
-    md: 12
+    sm: 4,
+    md: 3
   }) => {
     return (array.map((article) => {
       return renderArticle(article, positions)
     }))
   }
 
-  const Articles = splitToNChunks<Article>(ArticlesMockList.articles, 3)
-
   return (
     <div className={styles.GridContainer}>
       <Box sx={{ flexGrow: 1 }}>
         <Grid container>
-          <Grid item xs={12} md={3}>
-            <Grid container>
-              {renderArticles(Articles[0])}
-            </Grid>
-          </Grid>
-
-          <Grid item xs={12} md={6}>
-            <Grid container>
-              {renderArticles(Articles[1])}
-            </Grid>
-          </Grid>
-
-          <Grid item xs={12} md={3}>
-            <Grid container>
-              {renderArticles(Articles[2])}
-            </Grid>
-          </Grid>
-
+          {renderArticles(articleList.articles)}
         </Grid>
       </Box>
     </div>

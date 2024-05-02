@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 export const ArticleComponent = ({ article: { title, urlToImage, description, publishedAt } }: { article: Article }) => {
 
   const articleDate = new Date(publishedAt)
-
+  console.log(urlToImage)
   return (
     <ArticleContainer>
       <ImageComponent src={urlToImage} alt={title}
@@ -24,7 +24,7 @@ export const ArticleComponent = ({ article: { title, urlToImage, description, pu
       <Typography variant="subtitle2" gutterBottom>
         {description}
       </Typography>
-      <DateContainer variant='body2'>{articleDate.toLocaleString()}</DateContainer>
+      <DateContainer variant='body2'>{articleDate.toDateString()}</DateContainer>
     </ArticleContainer>
   )
 }
