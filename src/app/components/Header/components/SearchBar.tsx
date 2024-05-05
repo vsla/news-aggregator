@@ -4,18 +4,30 @@ import { styled, alpha } from '@mui/material/styles';
 
 import SearchIcon from '@mui/icons-material/Search';
 import InputBase from '@mui/material/InputBase';
+import { useArticlesProvider } from '@/app/contexts/Articles';
 
 export const SearchBar = () => {
+  const { changeSearchFilter } = useArticlesProvider()
   return (
-    <Search>
-      <SearchIconWrapper>
-        <SearchIcon />
-      </SearchIconWrapper>
-      <StyledInputBase
-        placeholder="Search…"
-        inputProps={{ 'aria-label': 'search' }}
-      />
-    </Search>
+    <form noValidate autoComplete="off" onSubmit={(e) => {
+      e.preventDefault()
+      const formData = new FormData(e.target);
+      const formProps = Object.fromEntries(formData);
+
+      const searchValue = formProps.search
+      changeSearchFilter(searchValue)
+    }}>
+      <Search>
+        <SearchIconWrapper>
+          <SearchIcon />
+        </SearchIconWrapper>
+        <StyledInputBase
+          name='search'
+          placeholder="Search…"
+          inputProps={{ 'aria-label': 'search' }}
+        />
+      </Search>
+    </form>
   )
 }
 

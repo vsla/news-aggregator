@@ -9,7 +9,7 @@ type ArticlesContextProps = {
   getArticles: () => {}
   loading: boolean,
   categoryFilter: string,
-  changeCategoryFilter: (category: string) => void
+  changeCategoryFilter: (category: categoryType) => void
 
   searchFilter: string,
   changeSearchFilter: (category: string) => void
@@ -23,21 +23,21 @@ export function ArticleProvider({ children }: { children: React.ReactNode }) {
   const [categoryFilter, setCategoryFilter] = useState<categoryType>(categoriesEnum[0])
   const [searchFilter, setSearchFilter] = useState<string>('')
 
-  const getArticles = async (newCategory?: categoryType) => {
+  const getArticles = async (newCategory?: categoryType, newSearch?: string) => {
     setLoading(true)
-    const articleList = await fetchArticles(newCategory || categoryFilter, searchFilter)
+    const articleList = await fetchArticles(newCategory || categoryFilter, newSearch || searchFilter)
     setArticles(articleList.articles)
     setLoading(false)
   }
 
   const changeCategoryFilter = async (newCategory: categoryType) => {
     setCategoryFilter(newCategory)
-    getArticles(newCategory)
+    getArticles(newCategory, searchFilter)
   }
 
-  const changeSearchFilter = async (newSearch: categoryType) => {
+  const changeSearchFilter = async (newSearch: string) => {
     setSearchFilter(newSearch)
-    getArticles()
+    getArticles(categoryFilter, newSearch)
   }
 
   useEffect(() => {

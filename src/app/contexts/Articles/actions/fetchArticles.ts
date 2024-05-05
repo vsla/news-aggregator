@@ -39,35 +39,40 @@ type multimediaNYT = {
 }
 
 type NYTArticle = {
-  title: string
+  headline: {
+    main: string
+  },
   abstract: string,
-  item_type: string,
-  created_date: string
+
+  pub_date: string
   multimedia: multimediaNYT[]
 }
 
 const formatNYT = (articles: NYTArticle[]) => {
   const formattedArticles: Article[] = []
 
-  const findTheLargerImage = (assets: multimediaNYT[]) => assets.find(({ format }) => {
-    return format === 'mediumThreeByTwo440'
-  })
+  const findTheLargerImage = (assets: multimediaNYT[]) => assets.sort((
+    { width: w1 },
+    { width: w2 }
+  ) => {
+    return parseInt(w2) - parseInt(w1)
+  })[0]
 
   articles.forEach((
     { abstract,
-      title,
-      multimedia, item_type, created_date }
+      headline,
+      multimedia, pub_date }
   ) => {
 
-    if (multimedia && item_type === 'Article') {
+    if (multimedia.length > 0) {
 
-      const imageUrl = findTheLargerImage(multimedia)?.url || ''
+      const imageUrl = findTheLargerImage(multimedia).url ? `https://static01.nyt.com/${findTheLargerImage(multimedia).url}` : ''
 
       formattedArticles.push({
-        title,
+        title: headline.main,
         description: abstract,
         urlToImage: imageUrl,
-        publishedAt: created_date
+        publishedAt: pub_date
       })
     }
   })
@@ -118,18 +123,29 @@ const removeArticleWithoutImagesFromNewsApi = (articles: newsApiArticle[]) => {
 const createNewsFetchUrl = (categoryFilter: categoryType,
   searchFilter?: string) => {
   const apiCategory = categoryToEndpoints.news[categoryFilter]
-  return `https://newsapi.org/v2/top-headlines?apiKey=${process.env.NEXT_PUBLIC_NEWS_API_API_KEY}${apiCategory && `&category=${apiCategory}`}`
+  return `https://newsapi.org/v2/top-headlines?apiKey=${process.env.NEXT_PUBLIC_NEWS_API_API_KEY}
+  ${apiCategory && `&category=${apiCategory}`}
+  ${searchFilter ? `$q=${searchFilter}` : ''}
+}`
 }
 
 const createTheGuardianFetchUrl = (categoryFilter: categoryType,
   searchFilter?: string) => {
   const apiSection = categoryToEndpoints.guardian[categoryFilter]
-  return `https://content.guardianapis.com/search?show-elements=image&api-key=${process.env.NEXT_PUBLIC_THE_GUARDIAN_API_KEY}${apiSection && `&section=${apiSection}`}`
+  return `https://content.guardianapis.com/search?show-elements=image&api-key=${process.env.NEXT_PUBLIC_THE_GUARDIAN_API_KEY}${apiSection && `&section=${apiSection}`}${searchFilter ? `&$q=${searchFilter}` : ''}`
 }
+
 const createNYTFetchUrl = (categoryFilter: categoryType,
   searchFilter?: string) => {
   const apiSection = categoryToEndpoints.nty[categoryFilter]
-  return `https://api.nytimes.com/svc/topstories/v2/${apiSection}.json?api-key=${process.env.NEXT_PUBLIC_NYT_API_KEY}`
+
+  let query = apiSection
+
+  if (searchFilter) {
+    query += ' ' + searchFilter
+  }
+
+  return `https://api.nytimes.com/svc/search/v2/articlesearch.json/?sort=newest&q=${query}&api-key=${process.env.NEXT_PUBLIC_NYT_API_KEY}`
 }
 
 export async function fetchArticles(
@@ -138,16 +154,16 @@ export async function fetchArticles(
 
   const response1: Promise<{ articles: newsApiArticle[] }> = fetch(createNewsFetchUrl(categoryFilter, searchFilter), { next: { revalidate: 0 } }).then((response) => response.json())
   const response2: Promise<{ response: { results: theGuardianArticle[] } }> = fetch(createTheGuardianFetchUrl(categoryFilter, searchFilter), { next: { revalidate: 0 } }).then((response) => response.json())
-  const response3: Promise<{ results: NYTArticle[] }> = fetch(createNYTFetchUrl(categoryFilter, searchFilter), { next: { revalidate: 0 } }).then((response) => response.json())
+  const response3: Promise<{ response: { docs: NYTArticle[] } }> = fetch(createNYTFetchUrl(categoryFilter, searchFilter), { next: { revalidate: 0 } }).then((response) => response.json())
 
   let articles: Article[] = []
   await Promise.all([response1, response2, response3]).then((values) => {
 
     const formattedNewsApi = removeArticleWithoutImagesFromNewsApi(values[0].articles)
     const formattedGuardian = formatTheGuardian(values[1].response.results)
-    const formattedNYT = formatNYT(values[2].results)
+    const formattedNYT = formatNYT(values[2].response.docs)
 
-    articles = [...formattedGuardian, ...formattedNewsApi, ...formattedNYT]
+    articles = [...formattedNewsApi, ...formattedGuardian, ...formattedNYT]
   });
 
   return {

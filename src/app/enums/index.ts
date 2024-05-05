@@ -22,7 +22,7 @@ export const categoryToEndpoints = {
     'Sports': 'sport',
   },
   nty: {
-    'General': 'home',
+    'General': '',
     'Entertainment': 'automobiles',
     'Business': 'business',
     'Science': 'science',
