@@ -5,27 +5,25 @@ import React, { useState } from 'react'
 import Chip from '@mui/material/Chip';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-
-const categories: string[] = [
-  'General', 'Entertainment', 'Politics', 'Business', 'Tech', 'Art', 'Science', 'Health', 'Sports'
-]
+import { categoriesEnum } from '@/app/enums';
+import { useArticlesProvider } from '@/app/contexts/Articles';
 
 export const CategoryTabs = () => {
-  const [chipsSelected, setChipsSelected] = useState<string>(categories[0])
+  const { categoryFilter, changeCategoryFilter } = useArticlesProvider()
 
   const handleClick = (categoryLabel: string) => {
-    setChipsSelected(categoryLabel)
+    changeCategoryFilter(categoryLabel)
   };
 
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={1}>
         {
-          categories.map((categoryLabel) => {
+          categoriesEnum.map((categoryLabel) => {
             return (
               <Grid item key={categoryLabel} xs='auto'>
                 <Chip label={categoryLabel}
-                  variant={chipsSelected === categoryLabel ? 'filled' : 'outlined'}
+                  variant={categoryFilter === categoryLabel ? 'filled' : 'outlined'}
                   onClick={() => handleClick(categoryLabel)} />
               </Grid>
             )

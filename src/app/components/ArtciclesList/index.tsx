@@ -1,14 +1,14 @@
-import React from 'react'
-import { Grid } from '@mui/material'
+import React, { Suspense } from 'react'
+import { CircularProgress, Grid } from '@mui/material'
 import Box from '@mui/material/Box';
 
 import styles from './page.module.css'
 import { Article } from '@/app/types'
 import { ArticleComponent } from './components/ArticleComponent'
-import { fetchArticles } from '@/app/contexts/Articles/actions/fetchArticles';
+import { useArticlesProvider } from '@/app/contexts/Articles';
 
-export const ArticlesList = async () => {
-  const articleList = await fetchArticles()
+export const ArticlesList = () => {
+  const { articles, loading, } = useArticlesProvider()
 
   const renderArticle = (article: Article, positions: { xs: number, sm: number, md: number }) => {
     const { xs, sm, md } = positions
@@ -31,11 +31,27 @@ export const ArticlesList = async () => {
 
   return (
     <div className={styles.GridContainer}>
-      <Box sx={{ flexGrow: 1 }}>
-        <Grid container>
-          {renderArticles(articleList.articles)}
-        </Grid>
-      </Box>
+      {loading ?
+        (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              paddingBottom: '10px'
+            }}
+          >
+            <CircularProgress color='primary' />
+          </Box>
+        ) : (
+          <Box sx={{ flexGrow: 1 }}>
+            <Grid container>
+              {renderArticles(articles)}
+            </Grid>
+          </Box>
+        )
+      }
+
     </div>
   )
 }

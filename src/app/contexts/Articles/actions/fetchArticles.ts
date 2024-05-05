@@ -1,3 +1,5 @@
+'use client'
+import { categoriesEnum, categoryToEndpoints, categoryType } from "@/app/enums"
 import { Article } from "@/app/types"
 
 export type fetchArticlesResponse = {
@@ -76,12 +78,14 @@ const formatNYT = (articles: NYTArticle[]) => {
 const formatTheGuardian = (articles: theGuardianArticle[]) => {
   const formattedArticles: Article[] = []
 
-  const findTheLargerImage = (assets: theGuardianArticleAsset[]) => assets.find(({ typeData: {
-    width
+  const findTheLargerImage = (assets: theGuardianArticleAsset[]) => assets.sort(({ typeData: {
+    width: w1
+  } }, { typeData: {
+    width: w2
   } }) => {
 
-    return width === '1000'
-  })
+    return parseInt(w2) - parseInt(w1)
+  })[0]
 
   articles.forEach((
     { webPublicationDate,
@@ -111,12 +115,30 @@ const removeArticleWithoutImagesFromNewsApi = (articles: newsApiArticle[]) => {
   return articles.filter(({ urlToImage }) => urlToImage !== null)
 }
 
-export async function fetchArticles() {
-  const { NEWS_API_API_KEY, THE_GUARDIAN_API_KEY, NYT_API_KEY } = process.env
+const createNewsFetchUrl = (categoryFilter: categoryType,
+  searchFilter?: string) => {
+  const apiCategory = categoryToEndpoints.news[categoryFilter]
+  return `https://newsapi.org/v2/top-headlines?apiKey=${process.env.NEXT_PUBLIC_NEWS_API_API_KEY}${apiCategory && `&category=${apiCategory}`}`
+}
 
-  const response1: Promise<{ articles: newsApiArticle[] }> = fetch(`https://newsapi.org/v2/top-headlines?apiKey=${NEWS_API_API_KEY}&sources=bbc-news`, { next: { revalidate: 0 } }).then((response) => response.json())
-  const response2: Promise<{ response: { results: theGuardianArticle[] } }> = fetch(`https://content.guardianapis.com/search?show-elements=image&api-key=${THE_GUARDIAN_API_KEY}`, { next: { revalidate: 0 } }).then((response) => response.json())
-  const response3: Promise<{ results: NYTArticle[] }> = fetch(`https://api.nytimes.com/svc/news/v3/content/all/all.json?api-key=${NYT_API_KEY}`, { next: { revalidate: 0 } }).then((response) => response.json())
+const createTheGuardianFetchUrl = (categoryFilter: categoryType,
+  searchFilter?: string) => {
+  const apiSection = categoryToEndpoints.guardian[categoryFilter]
+  return `https://content.guardianapis.com/search?show-elements=image&api-key=${process.env.NEXT_PUBLIC_THE_GUARDIAN_API_KEY}${apiSection && `&section=${apiSection}`}`
+}
+const createNYTFetchUrl = (categoryFilter: categoryType,
+  searchFilter?: string) => {
+  const apiSection = categoryToEndpoints.nty[categoryFilter]
+  return `https://api.nytimes.com/svc/topstories/v2/${apiSection}.json?api-key=${process.env.NEXT_PUBLIC_NYT_API_KEY}`
+}
+
+export async function fetchArticles(
+  categoryFilter: categoryType,
+  searchFilter?: string) {
+
+  const response1: Promise<{ articles: newsApiArticle[] }> = fetch(createNewsFetchUrl(categoryFilter, searchFilter), { next: { revalidate: 0 } }).then((response) => response.json())
+  const response2: Promise<{ response: { results: theGuardianArticle[] } }> = fetch(createTheGuardianFetchUrl(categoryFilter, searchFilter), { next: { revalidate: 0 } }).then((response) => response.json())
+  const response3: Promise<{ results: NYTArticle[] }> = fetch(createNYTFetchUrl(categoryFilter, searchFilter), { next: { revalidate: 0 } }).then((response) => response.json())
 
   let articles: Article[] = []
   await Promise.all([response1, response2, response3]).then((values) => {
