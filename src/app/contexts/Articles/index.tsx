@@ -6,7 +6,7 @@ import { categoriesEnum, categoryType } from '@/app/enums'
 
 type ArticlesContextProps = {
   articles: Article[],
-  getArticles: () => {}
+  renderMoreArticles: () => {}
   loading: boolean,
   categoryFilter: string,
   changeCategoryFilter: (category: categoryType) => void
@@ -23,10 +23,21 @@ export function ArticleProvider({ children }: { children: React.ReactNode }) {
   const [categoryFilter, setCategoryFilter] = useState<categoryType>(categoriesEnum[0])
   const [searchFilter, setSearchFilter] = useState<string>('')
 
+  const [page, setPage] = useState<number>(1)
+
+  const renderMoreArticles = async () => {
+    setLoading(true)
+    const articleList = await fetchArticles(page, categoryFilter, searchFilter)
+    setArticles([...articles, ...articleList.articles])
+    setPage(page + 1)
+    setLoading(false)
+  }
+
   const getArticles = async (newCategory?: categoryType, newSearch?: string) => {
     setLoading(true)
-    const articleList = await fetchArticles(newCategory || categoryFilter, newSearch || searchFilter)
+    const articleList = await fetchArticles(page, newCategory || categoryFilter, newSearch || searchFilter)
     setArticles(articleList.articles)
+    setPage(page + 1)
     setLoading(false)
   }
 
@@ -48,7 +59,7 @@ export function ArticleProvider({ children }: { children: React.ReactNode }) {
     <ArticlesContext.Provider value={{
       articles,
       loading,
-      getArticles,
+      renderMoreArticles,
       categoryFilter,
       changeCategoryFilter,
       searchFilter,

@@ -120,22 +120,23 @@ const removeArticleWithoutImagesFromNewsApi = (articles: newsApiArticle[]) => {
   return articles.filter(({ urlToImage }) => urlToImage !== null)
 }
 
-const createNewsFetchUrl = (categoryFilter: categoryType,
+const createNewsFetchUrl = (page: number, categoryFilter: categoryType,
   searchFilter?: string) => {
   const apiCategory = categoryToEndpoints.news[categoryFilter]
   return `https://newsapi.org/v2/top-headlines?apiKey=${process.env.NEXT_PUBLIC_NEWS_API_API_KEY}
   ${apiCategory && `&category=${apiCategory}`}
   ${searchFilter ? `$q=${searchFilter}` : ''}
-}`
+  &page=${page}`
+
 }
 
-const createTheGuardianFetchUrl = (categoryFilter: categoryType,
+const createTheGuardianFetchUrl = (page: number, categoryFilter: categoryType,
   searchFilter?: string) => {
   const apiSection = categoryToEndpoints.guardian[categoryFilter]
-  return `https://content.guardianapis.com/search?show-elements=image&api-key=${process.env.NEXT_PUBLIC_THE_GUARDIAN_API_KEY}${apiSection && `&section=${apiSection}`}${searchFilter ? `&$q=${searchFilter}` : ''}`
+  return `https://content.guardianapis.com/search?show-elements=image&api-key=${process.env.NEXT_PUBLIC_THE_GUARDIAN_API_KEY}${apiSection && `&section=${apiSection}`}${searchFilter ? `&$q=${searchFilter}` : ''}&page=${page}`
 }
 
-const createNYTFetchUrl = (categoryFilter: categoryType,
+const createNYTFetchUrl = (page: number, categoryFilter: categoryType,
   searchFilter?: string) => {
   const apiSection = categoryToEndpoints.nty[categoryFilter]
 
@@ -145,16 +146,17 @@ const createNYTFetchUrl = (categoryFilter: categoryType,
     query += ' ' + searchFilter
   }
 
-  return `https://api.nytimes.com/svc/search/v2/articlesearch.json/?sort=newest&q=${query}&api-key=${process.env.NEXT_PUBLIC_NYT_API_KEY}`
+  return `https://api.nytimes.com/svc/search/v2/articlesearch.json/?sort=newest&q=${query}&api-key=${process.env.NEXT_PUBLIC_NYT_API_KEY}&page=${page}`
 }
 
 export async function fetchArticles(
+  page: number,
   categoryFilter: categoryType,
   searchFilter?: string) {
 
-  const response1: Promise<{ articles: newsApiArticle[] }> = fetch(createNewsFetchUrl(categoryFilter, searchFilter), { next: { revalidate: 0 } }).then((response) => response.json())
-  const response2: Promise<{ response: { results: theGuardianArticle[] } }> = fetch(createTheGuardianFetchUrl(categoryFilter, searchFilter), { next: { revalidate: 0 } }).then((response) => response.json())
-  const response3: Promise<{ response: { docs: NYTArticle[] } }> = fetch(createNYTFetchUrl(categoryFilter, searchFilter), { next: { revalidate: 0 } }).then((response) => response.json())
+  const response1: Promise<{ articles: newsApiArticle[] }> = fetch(createNewsFetchUrl(page, categoryFilter, searchFilter), { next: { revalidate: 0 } }).then((response) => response.json())
+  const response2: Promise<{ response: { results: theGuardianArticle[] } }> = fetch(createTheGuardianFetchUrl(page, categoryFilter, searchFilter), { next: { revalidate: 0 } }).then((response) => response.json())
+  const response3: Promise<{ response: { docs: NYTArticle[] } }> = fetch(createNYTFetchUrl(page, categoryFilter, searchFilter), { next: { revalidate: 0 } }).then((response) => response.json())
 
   let articles: Article[] = []
   await Promise.all([response1, response2, response3]).then((values) => {
