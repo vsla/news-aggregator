@@ -6,7 +6,8 @@ import { categoriesEnum, categoryType } from '@/app/enums'
 
 type ArticlesContextProps = {
   articles: Article[],
-  renderMoreArticles: () => {}
+  renderMoreArticles: () => {},
+  getArticles: () => {},
   loading: boolean,
   categoryFilter: string,
   changeCategoryFilter: (category: categoryType) => void
@@ -35,6 +36,7 @@ export function ArticleProvider({ children }: { children: React.ReactNode }) {
 
   const getArticles = async (newCategory?: categoryType, newSearch?: string) => {
     setLoading(true)
+    setArticles([])
     const articleList = await fetchArticles(page, newCategory || categoryFilter, newSearch || searchFilter)
     setArticles(articleList.articles)
     setPage(page + 1)
@@ -59,6 +61,7 @@ export function ArticleProvider({ children }: { children: React.ReactNode }) {
     <ArticlesContext.Provider value={{
       articles,
       loading,
+      getArticles,
       renderMoreArticles,
       categoryFilter,
       changeCategoryFilter,

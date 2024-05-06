@@ -6,6 +6,7 @@ import styles from './page.module.css'
 import { Article } from '@/app/types'
 import { ArticleComponent } from './components/ArticleComponent'
 import { useArticlesProvider } from '@/app/contexts/Articles';
+import { ScrollTop } from '../BackToTop';
 
 export const ArticlesList = () => {
   const { articles, loading, renderMoreArticles } = useArticlesProvider()
@@ -49,6 +50,8 @@ export const ArticlesList = () => {
           {renderArticles(articles)}
         </Grid>
       </Box>
+
+      <ScrollTop />
 
       {loading &&
         (
