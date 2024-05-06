@@ -11,10 +11,9 @@ export const SearchBar = () => {
   return (
     <form noValidate autoComplete="off" onSubmit={(e) => {
       e.preventDefault()
-      const formData = new FormData(e.target);
-      const formProps = Object.fromEntries(formData);
+      const formData = new FormData(e.currentTarget);
 
-      const searchValue = formProps.search
+      const searchValue = formData.get('search') as string
       changeSearchFilter(searchValue)
     }}>
       <Search>
