@@ -55,7 +55,7 @@ export function ArticleProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     getArticles()
-  }, [])
+  })
 
   return (
     <ArticlesContext.Provider value={{
