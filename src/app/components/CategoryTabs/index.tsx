@@ -1,17 +1,17 @@
 'use client'
 
-import React, { useState } from 'react'
+import React from 'react'
 
 import Chip from '@mui/material/Chip';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import { categoriesEnum } from '@/app/enums';
+import { categoriesEnum, categoryType } from '@/app/enums';
 import { useArticlesProvider } from '@/app/contexts/Articles';
 
 export const CategoryTabs = () => {
   const { categoryFilter, changeCategoryFilter } = useArticlesProvider()
 
-  const handleClick = (categoryLabel: string) => {
+  const handleClick = (categoryLabel: categoryType) => {
     changeCategoryFilter(categoryLabel)
   };
 

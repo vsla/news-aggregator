@@ -1,36 +1,67 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<h1 align="center">News aggregator</h1>
 
-## Getting Started
+<div align="center">
+  <p >Website view all the new from various sources</p>
+  <a>https://vsla-debttracker.netlify.app</a>
+</div>
+<!-- 
+<p align="center">
+  <img alt="Forks" src='https://img.shields.io/github/forks/vsla/nutcache-challenge-victorAttar'>
+  <img alt="Issues" src='https://img.shields.io/github/issues/vsla/nutcache-challenge-victorAttar'>
+  <img alt="Starts" src='https://img.shields.io/github/stars/vsla/nutcache-challenge-victorAttar'>
+</p>
 
-First, run the development server:
+<div style='display: flex; flex-direction: row; align-items: center;'>
+<img src="https://github.com/vsla/nutcache-challenge-victorAttar/blob/master/assets/employeeForm.png?raw=true" alt="drawing" width="35%" height='70%' />
+<img src="https://github.com/vsla/nutcache-challenge-victorAttar/blob/master/assets/employeeList.png?raw=true" alt="drawing" width="64%" height='auto'/>
+</div> -->
+
+## Summary
+
+- [🚀 Stack Used](#-stack-used)
+- [🔖 Libraries Used](#-libraries-used)
+- [⚡ Running the app](#-running-the-app)
+- [📝 License](#-license)
+
+<!-- Running on this [link]() -->
+
+## 🚀 Stack Used
+
+The following tools were used to develop this project:
+
+- **NextJs**
+- **NPM**
+- Typescript
+
+## 🔖 Libraries Used
+
+- [Material ui](https://mui.com/)
+
+## 📰 Sources used
+
+- [News API](https://newsapi.org/)
+- [The Guardian API](https://open-platform.theguardian.com/access/)
+- [New York Times API](https://developer.nytimes.com/)
+
+## ⚡ Running the app
+
+1. Get an API key for the news sources used in this project
+2. Create a .env.local file with the keys for the News sources using the .env.example file in the root of the project
+3. Run the project
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Clonning the repo
+$ git clone
+
+# Install all the dependencies
+$ npm install
+
+# Run the project
+$ npm run
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 📝 License
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+This project is under the MIT license.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Made with ❤️ by Victor Attar <a href="https://www.linkedin.com/in/victor-attar" target="_blank"><img src="https://img.shields.io/badge/LinkedIn-%230077B5.svg?&style=flat-square&logo=linkedin&logoColor=white" alt="LinkedIn"></a>
