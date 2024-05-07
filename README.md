@@ -21,6 +21,7 @@
 - [🚀 Stack Used](#-stack-used)
 - [🔖 Libraries Used](#-libraries-used)
 - [⚡ Running the app](#-running-the-app)
+- [Running the app with docker](#running-the-app-with-docker)
 - [📝 License](#-license)
 
 <!-- Running on this [link]() -->
@@ -59,6 +60,10 @@ $ npm install
 # Run the project
 $ npm run
 ```
+
+## Running the app with docker
+
+Go to [Docker Readme](README.Docker.md)
 
 ## 📝 License
 
